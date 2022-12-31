@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
 	GetStaticProps,
 	GetStaticPaths,
@@ -12,21 +13,19 @@ type Customer = {
 	industry: string;
 };
 
+type GetCustomerResponse = {
+	customers: Customer[];
+};
+
 export const getStaticProps: GetStaticProps = async (context) => {
+	const result = await axios.get<GetCustomerResponse>(
+		'http://127.0.0.1:8000/api/customers/'
+	);
+	console.log('result....', result);
+
 	return {
 		props: {
-			customers: [
-				{
-					id: 1,
-					name: 'Swiggy',
-					industry: 'Food',
-				},
-				{
-					id: 2,
-					name: 'Reliance',
-					industry: 'Petroleum',
-				},
-			],
+			customers: result.data.customers,
 		},
 	};
 };
@@ -34,7 +33,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const Customers: NextPage = ({
 	customers,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	console.log(customers);
+	// console.log(customers);
+
 	return (
 		<>
 			<h1>Here are the customers: </h1>
