@@ -7,7 +7,7 @@ import {
 	InferGetStaticPropsType,
 } from 'next';
 
-type Customer = {
+export type Customer = {
 	id: number;
 	name: string;
 	industry: string;
