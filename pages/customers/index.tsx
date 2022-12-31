@@ -13,20 +13,17 @@ type Customer = {
 	industry: string;
 };
 
-type GetCustomerResponse = {
-	customers: Customer[];
-};
-
 export const getStaticProps: GetStaticProps = async (context) => {
-	const result = await axios.get<GetCustomerResponse>(
-		'http://127.0.0.1:8000/api/customers/'
-	);
-	console.log('result....', result);
+	const result = await axios.get<{
+		customers: Customer[];
+	}>('http://127.0.0.1:8000/api/customers/');
+	console.log('result....', result.data.customers);
 
 	return {
 		props: {
 			customers: result.data.customers,
 		},
+		revalidate: 60,
 	};
 };
 
