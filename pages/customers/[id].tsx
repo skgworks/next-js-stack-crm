@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { Customer } from '.';
 
 type Props = {
-	customer: Customer;
+	customer?: Customer;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -18,7 +18,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	return {
 		paths: paths,
-		fallback: false,
+		fallback: true,
 	};
 };
 
@@ -31,21 +31,35 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
 ) => {
 	const params = context.params!;
 
-	const result = await axios.get<{
-		customer: Customer;
-	}>(`http://127.0.0.1:8000/api/customers/${params.id}`);
-	console.log('result from props....', result.data.customer);
-
-	return {
-		props: {
-			customer: result.data.customer,
-		},
-		revalidate: 60,
-	};
+	try {
+		const result = await axios.get<{
+			customer: Customer;
+		}>(`http://127.0.0.1:8000/api/customers/${params.id}`);
+		console.log('result from props....', result.data.customer);
+		return {
+			props: {
+				customer: result.data.customer,
+			},
+			revalidate: 60,
+		};
+	} catch (error) {
+		if (error instanceof AxiosError) {
+			if (error.response?.status === 404) {
+				return {
+					notFound: true,
+				};
+			}
+		}
+		return { props: {} };
+	}
 };
 
 const Customer: NextPage<Props> = (props) => {
-	return <h1>Customer {props.customer.name}</h1>;
+	const router = useRouter();
+	if (router.isFallback) {
+		return <p>Loading ..</p>;
+	}
+	return <h1>Customer {props.customer ? props.customer.name : null}</h1>;
 };
 
 export default Customer;
