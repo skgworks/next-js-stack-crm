@@ -9,16 +9,16 @@ type Props = {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
+	/* 	const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
 	console.log('result from paths....', result);
 
 	const paths = result.data.customers.map((customer: Customer) => ({
 		params: { id: customer.id.toString() },
-	}));
+	})); */
 
 	return {
-		paths: paths,
-		fallback: true,
+		paths: [],
+		fallback: 'blocking',
 	};
 };
 
@@ -47,6 +47,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
 			if (error.response?.status === 404) {
 				return {
 					notFound: true,
+					revalidate: 60,
 				};
 			}
 		}

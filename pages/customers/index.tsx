@@ -38,8 +38,9 @@ const Customers: NextPage = ({
 			{customers.map((customer: Customer) => {
 				return (
 					<div key={customer.id}>
-						<p>{customer.name}</p>
-						<p>{customer.industry}</p>
+						<p>
+							{customer.id} - {customer.name} ------ {customer.industry}
+						</p>
 					</div>
 				);
 			})}
