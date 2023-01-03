@@ -1,8 +1,11 @@
 import axios, { AxiosError } from 'axios';
+import { ObjectId } from 'mongodb';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { Customer } from '.';
+import clientPromise from '../../lib/mongodb';
+import { BSONTypeError } from 'bson';
 
 type Props = {
 	customer?: Customer;
@@ -32,26 +35,40 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
 	const params = context.params!;
 
 	try {
-		const result = await axios.get<{
+		/* const result = await axios.get<{
 			customer: Customer;
 		}>(`http://127.0.0.1:8000/api/customers/${params.id}`);
-		console.log('result from props....', result.data.customer);
+		console.log('result from props....', result.data.customer); */
+
+		const mongoClient = await clientPromise;
+
+		const data = (await mongoClient
+			.db()
+			.collection('customers')
+			.findOne({ _id: new ObjectId(params.id) })) as Customer;
+		console.log('!!!!!!', data);
+
+		if (!data) {
+			return {
+				notFound: true,
+				revalidate: 60,
+			};
+		}
+
 		return {
 			props: {
-				customer: result.data.customer,
+				customer: JSON.parse(JSON.stringify(data)),
 			},
 			revalidate: 60,
 		};
 	} catch (error) {
-		if (error instanceof AxiosError) {
-			if (error.response?.status === 404) {
-				return {
-					notFound: true,
-					revalidate: 60,
-				};
-			}
+		console.log(error);
+		if (error instanceof BSONTypeError) {
+			return {
+				notFound: true,
+			};
 		}
-		return { props: {} };
+		throw error;
 	}
 };
 
@@ -60,7 +77,7 @@ const Customer: NextPage<Props> = (props) => {
 	if (router.isFallback) {
 		return <p>Loading ..</p>;
 	}
-	return <h1>Customer {props.customer ? props.customer.name : null}</h1>;
+	return <h1> {props.customer ? 'Customer' + props.customer.name : null}</h1>;
 };
 
 export default Customer;

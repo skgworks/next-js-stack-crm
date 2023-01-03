@@ -7,6 +7,7 @@ import {
 	NextPage,
 	InferGetStaticPropsType,
 } from 'next';
+import clientPromise from '../../lib/mongodb';
 
 export type Customer = {
 	_id: ObjectId;
@@ -15,13 +16,15 @@ export type Customer = {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-	const mongoClient = new MongoClient(
-		'mongodb+srv://skg:DrNYeqTpSWh2NXBR@customers.orsinft.mongodb.net/Customers?retryWrites=true&w=majority'
-	);
+	// const mongoClient = new MongoClient(
+	// 	'mongodb+srv://skg:DrNYeqTpSWh2NXBR@customers.orsinft.mongodb.net/Customers?retryWrites=true&w=majority'
+	// );
 
-	const data = await mongoClient.db().collection('Customers').find().toArray();
+	const mongoClient = await clientPromise;
 
-	console.log('!!!!', data);
+	const data = await mongoClient.db().collection('customers').find().toArray();
+
+	// console.log('!!!!', data);
 
 	/* const result = await axios.get<{
 		customers: Customer[];
