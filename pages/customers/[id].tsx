@@ -6,6 +6,7 @@ import { ParsedUrlQuery } from 'querystring';
 import { Customer } from '.';
 import clientPromise from '../../lib/mongodb';
 import { BSONTypeError } from 'bson';
+import { getCustomer } from '../api/customers/[id]';
 
 type Props = {
 	customer?: Customer;
@@ -35,17 +36,8 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
 	const params = context.params!;
 
 	try {
-		/* const result = await axios.get<{
-			customer: Customer;
-		}>(`http://127.0.0.1:8000/api/customers/${params.id}`);
-		console.log('result from props....', result.data.customer); */
+		const data = await getCustomer(params.id);
 
-		const mongoClient = await clientPromise;
-
-		const data = (await mongoClient
-			.db()
-			.collection('customers')
-			.findOne({ _id: new ObjectId(params.id) })) as Customer;
 		console.log('!!!!!!', data);
 
 		if (!data) {
@@ -77,7 +69,7 @@ const Customer: NextPage<Props> = (props) => {
 	if (router.isFallback) {
 		return <p>Loading ..</p>;
 	}
-	return <h1> {props.customer ? 'Customer' + props.customer.name : null}</h1>;
+	return <h1> {props.customer ? 'Customer ' + props.customer.name : null}</h1>;
 };
 
 export default Customer;

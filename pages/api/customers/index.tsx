@@ -8,7 +8,11 @@ type Return = {
 
 export const getCustomers = async () => {
 	const mongoClient = await clientPromise;
-	const data = await mongoClient.db().collection('customers').find().toArray();
+	const data = (await mongoClient
+		.db()
+		.collection('customers')
+		.find()
+		.toArray()) as Customer[];
 	return JSON.parse(JSON.stringify(data));
 };
 
