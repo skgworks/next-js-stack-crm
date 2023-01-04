@@ -8,6 +8,7 @@ import {
 	InferGetStaticPropsType,
 } from 'next';
 import clientPromise from '../../lib/mongodb';
+import { getCustomers } from '../api/customers';
 
 export type Customer = {
 	_id: ObjectId;
@@ -16,15 +17,9 @@ export type Customer = {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-	// const mongoClient = new MongoClient(
-	// 	'mongodb+srv://skg:DrNYeqTpSWh2NXBR@customers.orsinft.mongodb.net/Customers?retryWrites=true&w=majority'
-	// );
+	const data = await getCustomers();
 
-	const mongoClient = await clientPromise;
-
-	const data = await mongoClient.db().collection('customers').find().toArray();
-
-	// console.log('!!!!', data);
+	console.log('!!!!', data);
 
 	/* const result = await axios.get<{
 		customers: Customer[];
@@ -33,7 +28,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
  */
 	return {
 		props: {
-			customers: JSON.parse(JSON.stringify(data)),
+			customers: data,
 		},
 		revalidate: 60,
 	};
