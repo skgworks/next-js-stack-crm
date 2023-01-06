@@ -17,8 +17,14 @@ export const editCustomer = async (
 };
 
 export const deleteCustomer = async (id: string | ObjectId) => {
-    id = typeof id?'string'
-}
+	id = typeof id === 'string' ? new ObjectId(id) : id;
+	const mongoClient = await clientPromise;
+	const data = await mongoClient
+		.db()
+		.collection('customers')
+		.deleteOne({ _id: id });
+	return data;
+};
 
 export const getCustomer = async (id: string | ObjectId): Promise<Customer> => {
 	id = typeof id === 'string' ? new ObjectId(id) : id;
@@ -33,7 +39,10 @@ export const getCustomer = async (id: string | ObjectId): Promise<Customer> => {
 export default async (
 	req: NextApiRequest,
 	res: NextApiResponse<
-		{ modifiedCount: number } | { customer: Customer } | string
+		| { modifiedCount: number }
+		| { customer: Customer }
+		| { error: string }
+		| { deletedCount: number }
 	>
 ) => {
 	const id = req.query.id;
@@ -41,7 +50,7 @@ export default async (
 		const data = await getCustomer(id as string);
 
 		if (!data) {
-			res.status(404).json('Customer not Found');
+			res.status(404).json({ error: 'Customer not Found' });
 		}
 		res.status(200).json({ customer: data });
 	} else if (req.method === 'PUT') {
@@ -51,5 +60,7 @@ export default async (
 		});
 		res.status(200).json({ modifiedCount: data.modifiedCount });
 	} else if (req.method === 'DELETE') {
+		const data = await deleteCustomer(id as string);
+		res.status(200).json({ deletedCount: data.deletedCount });
 	}
 };
