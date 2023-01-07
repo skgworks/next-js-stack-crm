@@ -36,23 +36,27 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 const Customers: NextPage = ({
-	customers,
+	customers: c,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	const customersQuery = useQuery(
+	const {
+		data: {
+			data: { customers },
+		},
+	} = useQuery(
 		['customers'],
 		() => {
 			return axios('/api/customers') as any;
 		},
 		{
-			initialData: { data: { customers: customers } },
+			initialData: { data: { customers: c } },
 		}
 	);
-	console.log(customers);
-	console.log(customersQuery);
+	// console.log(customers);
+	// console.log(c);
 	return (
 		<>
 			<h1>Here are the customers: </h1>
-			{customersQuery.data.data.customers.map((customer: Customer) => {
+			{customers.map((customer: Customer) => {
 				return (
 					<div key={customer._id?.toString()}>
 						<p>
