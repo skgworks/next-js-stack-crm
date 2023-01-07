@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { MongoClient, ObjectId } from 'mongodb';
@@ -9,6 +8,7 @@ import {
 	NextPage,
 	InferGetStaticPropsType,
 } from 'next';
+import CustomerComponent from '../../components/Customer';
 import clientPromise from '../../lib/mongodb';
 import { getCustomers } from '../api/customers';
 
@@ -51,15 +51,7 @@ const Customers: NextPage = ({
 		<>
 			<h1>Here are the customers: </h1>
 			{customers.map((customer: Customer) => {
-				return (
-					<div key={customer._id?.toString()}>
-						<p>
-							{customer._id?.toString()} - {customer.name} ------{' '}
-							{customer.industry}
-						</p>
-						<Button variant='contained'>View Orders</Button>
-					</div>
-				);
+				return <CustomerComponent customer={customer} />;
 			})}
 		</>
 	);
