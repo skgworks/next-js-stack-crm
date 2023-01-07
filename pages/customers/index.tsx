@@ -1,4 +1,6 @@
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { MongoClient, ObjectId } from 'mongodb';
 import {
 	GetStaticProps,
 	GetStaticPaths,
@@ -6,41 +8,54 @@ import {
 	NextPage,
 	InferGetStaticPropsType,
 } from 'next';
+import CustomerComponent from '../../components/Customer';
+import clientPromise from '../../lib/mongodb';
+import { getCustomers } from '../api/customers';
 
 export type Customer = {
-	id: number;
+	_id?: ObjectId;
 	name: string;
 	industry: string;
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-	const result = await axios.get<{
+	const data = await getCustomers();
+
+	console.log('!!!!', data);
+
+	/* const result = await axios.get<{
 		customers: Customer[];
 	}>('http://127.0.0.1:8000/api/customers/');
 	console.log('result....', result.data.customers);
-
+ */
 	return {
 		props: {
-			customers: result.data.customers,
+			customers: data,
 		},
 		revalidate: 60,
 	};
 };
 
 const Customers: NextPage = ({
-	customers,
+	customers: c,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+	const { data: { data: { customers = c } = {} } = {} } = useQuery(
+		['customers'],
+		() => {
+			return axios('/api/customers') as any;
+		}
+	);
 	// console.log(customers);
-
+	// console.log(c);
 	return (
 		<>
 			<h1>Here are the customers: </h1>
 			{customers.map((customer: Customer) => {
 				return (
-					<div key={customer.id}>
-						<p>{customer.name}</p>
-						<p>{customer.industry}</p>
-					</div>
+					<CustomerComponent
+						key={customer._id?.toString()}
+						customer={customer}
+					/>
 				);
 			})}
 		</>

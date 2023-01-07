@@ -1,24 +1,28 @@
 import axios, { AxiosError } from 'axios';
+import { ObjectId } from 'mongodb';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { Customer } from '.';
+import clientPromise from '../../lib/mongodb';
+import { BSONTypeError } from 'bson';
+import { getCustomer } from '../api/customers/[id]';
 
 type Props = {
 	customer?: Customer;
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
+	/* 	const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
 	console.log('result from paths....', result);
 
 	const paths = result.data.customers.map((customer: Customer) => ({
 		params: { id: customer.id.toString() },
-	}));
+	})); */
 
 	return {
-		paths: paths,
-		fallback: true,
+		paths: [],
+		fallback: 'blocking',
 	};
 };
 
@@ -32,25 +36,31 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
 	const params = context.params!;
 
 	try {
-		const result = await axios.get<{
-			customer: Customer;
-		}>(`http://127.0.0.1:8000/api/customers/${params.id}`);
-		console.log('result from props....', result.data.customer);
+		const data = await getCustomer(params.id);
+
+		console.log('!!!!!!', data);
+
+		if (!data) {
+			return {
+				notFound: true,
+				revalidate: 60,
+			};
+		}
+
 		return {
 			props: {
-				customer: result.data.customer,
+				customer: JSON.parse(JSON.stringify(data)),
 			},
 			revalidate: 60,
 		};
 	} catch (error) {
-		if (error instanceof AxiosError) {
-			if (error.response?.status === 404) {
-				return {
-					notFound: true,
-				};
-			}
+		console.log(error);
+		if (error instanceof BSONTypeError) {
+			return {
+				notFound: true,
+			};
 		}
-		return { props: {} };
+		throw error;
 	}
 };
 
@@ -59,7 +69,7 @@ const Customer: NextPage<Props> = (props) => {
 	if (router.isFallback) {
 		return <p>Loading ..</p>;
 	}
-	return <h1>Customer {props.customer ? props.customer.name : null}</h1>;
+	return <h1> {props.customer ? 'Customer ' + props.customer.name : null}</h1>;
 };
 
 export default Customer;
