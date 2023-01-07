@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { MongoClient, ObjectId } from 'mongodb';
 import {
@@ -37,12 +38,21 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const Customers: NextPage = ({
 	customers,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	// console.log(customers);
-
+	const customersQuery = useQuery(
+		['customers'],
+		() => {
+			return axios('/api/customers') as any;
+		},
+		{
+			initialData: { data: { customers: customers } },
+		}
+	);
+	console.log(customers);
+	console.log(customersQuery);
 	return (
 		<>
 			<h1>Here are the customers: </h1>
-			{customers.map((customer: Customer) => {
+			{customersQuery.data.data.customers.map((customer: Customer) => {
 				return (
 					<div key={customer._id?.toString()}>
 						<p>
