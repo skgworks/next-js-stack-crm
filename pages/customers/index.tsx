@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { MongoClient, ObjectId } from 'mongodb';
@@ -56,6 +57,7 @@ const Customers: NextPage = ({
 							{customer._id?.toString()} - {customer.name} ------{' '}
 							{customer.industry}
 						</p>
+						<Button variant='contained'>View Orders</Button>
 					</div>
 				);
 			})}
