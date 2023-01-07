@@ -79,7 +79,7 @@ export default function Theme(props: any) {
 	const toggleDrawer = () => {
 		setOpen(!open);
 	};
-	console.log(router);
+	// console.log(router);
 	return (
 		<ThemeProvider theme={mdTheme}>
 			<Box sx={{ display: 'flex' }}>

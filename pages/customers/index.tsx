@@ -1,3 +1,5 @@
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { MongoClient, ObjectId } from 'mongodb';
@@ -48,17 +50,22 @@ const Customers: NextPage = ({
 	// console.log(customers);
 	// console.log(c);
 	return (
-		<>
-			<h1>Here are the customers: </h1>
-			{customers.map((customer: Customer) => {
-				return (
-					<CustomerComponent
-						key={customer._id?.toString()}
-						customer={customer}
-					/>
-				);
-			})}
-		</>
+		<Container>
+			<Grid
+				// maxWidth='lg'
+				sx={{ mt: 1 }}
+				container
+				spacing={5}>
+				{customers.map((customer: Customer) => {
+					return (
+						<CustomerComponent
+							key={customer._id?.toString()}
+							customer={customer}
+						/>
+					);
+				})}
+			</Grid>
+		</Container>
 	);
 };
 
