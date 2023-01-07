@@ -38,21 +38,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
 const Customers: NextPage = ({
 	customers: c,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-	const {
-		data: {
-			data: { customers },
-		},
-	} = useQuery(
+	const { data: { data: { customers = c } = {} } = {} } = useQuery(
 		['customers'],
 		() => {
 			return axios('/api/customers') as any;
-		},
-		{
-			initialData: { data: { customers: c } },
 		}
 	);
-	// console.log(customers);
-	// console.log(c);
+	console.log(customers);
+	console.log(c);
 	return (
 		<>
 			<h1>Here are the customers: </h1>
