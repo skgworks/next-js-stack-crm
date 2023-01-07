@@ -11,7 +11,6 @@ type props = {
 const Customer = ({ customer }: props) => {
 	return (
 		<div
-			key={customer._id?.toString()}
 			style={{
 				marginBottom: 10,
 				padding: 10,

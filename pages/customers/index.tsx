@@ -45,13 +45,18 @@ const Customers: NextPage = ({
 			return axios('/api/customers') as any;
 		}
 	);
-	console.log(customers);
-	console.log(c);
+	// console.log(customers);
+	// console.log(c);
 	return (
 		<>
 			<h1>Here are the customers: </h1>
 			{customers.map((customer: Customer) => {
-				return <CustomerComponent customer={customer} />;
+				return (
+					<CustomerComponent
+						key={customer._id?.toString()}
+						customer={customer}
+					/>
+				);
 			})}
 		</>
 	);
