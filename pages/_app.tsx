@@ -7,6 +7,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Theme from '../components/Theme';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App({ Component, pageProps }: AppProps) {
 	const [queryClient] = useState(() => new QueryClient());
@@ -15,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
 			<Theme>
 				<Component {...pageProps} />
 				<ReactQueryDevtools initialIsOpen={false} />
+				<Analytics />
 			</Theme>
 		</QueryClientProvider>
 	);
