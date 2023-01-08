@@ -18,6 +18,14 @@ export type Customer = {
 	_id?: ObjectId;
 	name: string;
 	industry: string;
+	orders: Order[];
+};
+
+export type Order = {
+	description: string;
+	// price: number;
+	_id: ObjectId;
+	price: { $numberDecimal: string };
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
