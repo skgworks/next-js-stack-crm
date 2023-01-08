@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextCors from 'nextjs-cors';
 import clientPromise from '../../../lib/mongodb';
-import { Customer } from '../../customers';
+import { Customer, Order } from '../../customers';
 
 type Return = {
 	customers: Customer[];
@@ -48,12 +48,15 @@ export default async (
 	} else if (req.method === 'POST') {
 		// const data = await getCustomers();
 		// res.status(200).json({ customers: data });
-		console.log(req.body);
+		// console.log(req.body);
 
 		if (req.body.name && req.body.industry) {
 			const customer: Customer = {
 				name: req.body.name,
 				industry: req.body.industry,
+				orders: req.body.orders.map((order: Order) => {
+					return { ...order, _id: new ObjectId() };
+				}),
 			};
 
 			const insertedId = await addCustomer(customer);
