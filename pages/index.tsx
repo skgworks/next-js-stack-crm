@@ -1,86 +1,40 @@
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Chart from '../components/Chart';
-import Deposits from '../components/Deposits';
-import Orders from '../components/Orders';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
-import { NextPage } from 'next';
+import { useAppDispatch } from "../hooks/common/useRedux";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useAppSelector } from "../hooks/common/useRedux";
+import { setLoggingIn, setUser } from "../redux/user/reducer";
+import { selectLoggedIn } from "../redux/user/selectors";
+import { useEffect } from "react";
+import { Screen as LoadingScreen } from "../components/loading";
+import RenderIf from "../components/render-if";
+import Landing from "../components/landing";
+import Home from "../components/Home";
+import Theme from "../components/Theme";
+import { selectIsLoggingIn } from "../redux/user/selectors";
 
-function Copyright(props: any) {
-	return (
-		<Typography
-			variant='body2'
-			color='text.secondary'
-			align='center'
-			{...props}>
-			{'Copyright © '}
-			<Link
-				color='inherit'
-				href='https://mui.com/'>
-				Your Website
-			</Link>{' '}
-			{new Date().getFullYear()}
-			{'.'}
-		</Typography>
-	);
+export default function Renderer() {
+  const dispatch = useAppDispatch();
+  const { user, error, isLoading } = useUser();
+  const loggedIn = useAppSelector((state) => selectLoggedIn(state));
+  const isLoggingIn = useAppSelector((state) => selectIsLoggingIn(state));
+  useEffect(() => {
+    if (user) {
+      dispatch(setUser(user));
+      dispatch(setLoggingIn(false));
+    }
+  }, [user]);
+  return (
+    <>
+      <RenderIf condition={!!isLoggingIn && !loggedIn}>
+        <LoadingScreen />
+      </RenderIf>
+      <RenderIf condition={!loggedIn && !isLoggingIn}>
+        <Landing />
+      </RenderIf>
+      <RenderIf condition={!!loggedIn}>
+        <Theme>
+          <Home />
+        </Theme>
+      </RenderIf>
+    </>
+  );
 }
-
-const Home: NextPage = () => {
-	return (
-		<>
-			<Container
-				maxWidth='lg'
-				sx={{ mt: 4, mb: 4 }}>
-				<Grid
-					container
-					spacing={3}>
-					{/* Chart */}
-					<Grid
-						item
-						xs={12}
-						md={8}
-						lg={9}>
-						<Paper
-							sx={{
-								p: 2,
-								display: 'flex',
-								flexDirection: 'column',
-								height: 240,
-							}}>
-							<Chart />
-						</Paper>
-					</Grid>
-					{/* Recent Deposits */}
-					<Grid
-						item
-						xs={12}
-						md={4}
-						lg={3}>
-						<Paper
-							sx={{
-								p: 2,
-								display: 'flex',
-								flexDirection: 'column',
-								height: 240,
-							}}>
-							<Deposits />
-						</Paper>
-					</Grid>
-					{/* Recent Orders */}
-					<Grid
-						item
-						xs={12}>
-						<Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-							<Orders />
-						</Paper>
-					</Grid>
-				</Grid>
-				<Copyright sx={{ pt: 4 }} />
-			</Container>
-		</>
-	);
-};
-
-export default Home;
