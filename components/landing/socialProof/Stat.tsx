@@ -1,6 +1,6 @@
 import * as types from "./types";
 
-export default function ({ data }: types.StatProps) {
+export default function Stat({ data }: types.StatProps) {
   const { title, description, icon } = data;
   return (
     <div>
