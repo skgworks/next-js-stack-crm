@@ -1,6 +1,7 @@
 import * as types from "./types";
 import RenderIf from "../../render-if";
 import FeatureContent from "./FeatureContent";
+import Image from "next/image";
 
 export default function Features() {
   const data: types.Data = [
@@ -42,10 +43,10 @@ export default function Features() {
             <RenderIf condition={!(index % 2)}>
               <FeatureContent margin data={rest} />
             </RenderIf>
-            <img
+            <Image
               className="hidden w-full mb-4 rounded-lg lg:mb-0 lg:flex"
-              src={image?.src}
-              alt={image?.alt}
+              src={image?.src || ""}
+              alt={image?.alt || ""}
             />
             <RenderIf condition={!!(index % 2)}>
               <FeatureContent data={rest} />
