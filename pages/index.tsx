@@ -24,7 +24,7 @@ export default function Renderer() {
   }, [user, dispatch]);
   return (
     <>
-      <RenderIf condition={!!isLoggingIn && !loggedIn}>
+      <RenderIf condition={!!isLoading && !loggedIn && !!isLoggingIn}>
         <LoadingScreen />
       </RenderIf>
       <RenderIf condition={!loggedIn && !isLoggingIn}>
