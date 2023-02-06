@@ -10,7 +10,7 @@ export default function Logout() {
   useEffect(() => {
     dispatch(logout());
     router.push("/");
-  }, []);
+  }, [dispatch, router]);
 
   dispatch(logout());
   return <>Logging you out...</>;

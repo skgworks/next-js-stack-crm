@@ -21,7 +21,7 @@ export default function Renderer() {
       dispatch(setUser(user));
       dispatch(setLoggingIn(false));
     }
-  }, [user]);
+  }, [user, dispatch]);
   return (
     <>
       <RenderIf condition={!!isLoggingIn && !loggedIn}>
