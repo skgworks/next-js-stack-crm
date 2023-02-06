@@ -23,7 +23,7 @@ export default function Testimonials() {
             </p>
           </blockquote>
           <figcaption className="flex items-center justify-center mt-6 space-x-3">
-            <Image className="w-6 h-6 rounded-full" src={user.img} alt="User" />
+            <img className="w-6 h-6 rounded-full" src={user.img} alt="User" />
             <div className="flex items-center divide-x-2 divide-gray-500">
               <p className="pr-3 font-medium text-gray-900">{user.name}</p>
               <p className="pl-3 text-sm font-light text-gray-500">

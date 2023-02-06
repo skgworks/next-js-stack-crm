@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Button from "../button";
 
 export default function Hero() {
@@ -47,7 +46,7 @@ export default function Hero() {
         </div>
       </div>
       <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-        <Image src={image} alt="Hero Logo" />
+        <img src={image} alt="Hero Logo" />
       </div>
     </div>
   );
