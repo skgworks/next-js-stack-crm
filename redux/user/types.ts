@@ -4,5 +4,4 @@ export interface State {
   nickname?: string | null;
   picture?: string | null;
   loggedIn?: boolean;
-  loggingIn?: boolean;
 }

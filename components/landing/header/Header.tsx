@@ -2,7 +2,6 @@
 //header component for the dashboard or application, then please go to components/header.
 
 import { useState } from "react";
-import { useRouter } from "next/router";
 
 import Logo from "../../logo";
 import Button from "../button";
@@ -11,15 +10,11 @@ import MobileMenu from "./MobileMenu";
 import MobileView from "./MobileView";
 import RenderIf from "../../render-if";
 import DesktopMenu from "./DesktopMenu";
-import { setLoggingIn } from "../../../redux/user/reducer";
 import useViewport from "../../../hooks/common/useViewport";
-import { useAppDispatch } from "../../../hooks/common/useRedux";
 
 export default function Header() {
   //Hooks and functions
   const { width } = useViewport();
-  const router = useRouter();
-  const dispatch = useAppDispatch();
 
   //States
   const [active, setActive] = useState(0);
@@ -35,7 +30,7 @@ export default function Header() {
       { name: "Team", link: "#" },
       { name: "Contact", link: "#" },
     ],
-    button: { text: "Sign In", link: "/login" },
+    button: { text: "Sign In", link: "/api/auth/login" },
   };
 
   // Handles click on menu icon to open/close in mobile devices.
@@ -48,12 +43,6 @@ export default function Header() {
     setActive(index);
   };
 
-  // Handles click on login button to redirect to auth0 login page.
-  const onLoginClick = () => {
-    dispatch(setLoggingIn(true));
-    router.push("/api/auth/login");
-  };
-
   return (
     <header className="fixed w-full bg-white">
       <nav className="bg-white border-gray-200 py-2.5">
@@ -64,7 +53,7 @@ export default function Header() {
           </RenderIf>
           <div className="flex-1 lg:flex-none lg:order-1 flex justify-end">
             <div>
-              <Button value={button.text} onClick={onLoginClick} />
+              <Button value={button.text} link={button.link} />
             </div>
           </div>
           <MobileView menuOpen={showMenu} onClick={onMenuClick} />
