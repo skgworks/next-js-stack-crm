@@ -13,6 +13,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { store, persistor } from "../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Screen as LoadingScreen } from "../components/loading";
+import Theme from "../components/Theme";
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
   return (
@@ -20,9 +21,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <PersistGate loading={<LoadingScreen />} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <UserProvider>
-            <Component {...pageProps} />
-            <ReactQueryDevtools initialIsOpen={false} />
-            <Analytics />
+            <Theme>
+              <Component {...pageProps} />
+              <ReactQueryDevtools initialIsOpen={false} />
+              <Analytics />
+            </Theme>
           </UserProvider>
         </QueryClientProvider>
       </PersistGate>
