@@ -15,7 +15,7 @@ import { selectLoggedIn } from "../redux/user/selectors";
 // Just an example is mentioned below.
 const mdTheme = createTheme({
   palette: {
-    primary: { main: "#9333ea" },
+    // primary: { main: "#9333ea" },
   },
 });
 
