@@ -6,5 +6,3 @@ export const user = (state: RootState) => state.user;
 export const selectLoggedIn = createSelector(user, (user) => user.loggedIn);
 
 export const selectUserImage = createSelector(user, (user) => user.picture);
-
-export const selectIsLoggingIn = createSelector(user, (user) => user.loggingIn);

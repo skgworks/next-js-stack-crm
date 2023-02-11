@@ -1,7 +1,10 @@
-import { handleAuth, handleLogout } from "@auth0/nextjs-auth0";
+import { handleAuth, handleLogin, handleLogout } from "@auth0/nextjs-auth0";
 
 export default handleAuth({
+  login: handleLogin((req) => {
+    return { returnTo: `https://${process.env.VERCEL_URL}/login` };
+  }),
   logout: handleLogout((req) => {
-    return { returnTo: "http://localhost:3000/logout" };
+    return { returnTo: `https://${process.env.VERCEL_URL}/logout` };
   }),
 });
